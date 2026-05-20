@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
 import 'home/home_screen.dart';
 import 'search/search_screen.dart';
+import 'mood/mood_screen.dart';
 import 'favorites/favorites_screen.dart';
 import 'profile/profile_screen.dart';
 
@@ -18,6 +19,7 @@ class _MainScreenState extends State<MainScreen> {
   final List<Widget> _screens = [
     const HomeScreen(),
     const SearchScreen(),
+    const MoodScreen(),
     const FavoritesScreen(),
     const ProfileScreen(),
   ];
@@ -64,6 +66,11 @@ class _MainScreenState extends State<MainScreen> {
                 icon: Icon(Icons.search),
                 activeIcon: Icon(Icons.search_rounded),
                 label: 'Cari',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.emoji_emotions_outlined),
+                activeIcon: Icon(Icons.emoji_emotions),
+                label: 'Mood',
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.favorite_outline),

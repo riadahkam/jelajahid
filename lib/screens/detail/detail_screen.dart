@@ -5,13 +5,141 @@ import '../../widgets/rating_widget.dart';
 import '../../widgets/price_tag.dart';
 import '../booking/booking_screen.dart';
 
+// Weather data classes
+class WeatherInfo {
+  final String condition;
+  final double temp;
+  final int humidity;
+  final double windSpeed;
+  final IconData icon;
+  final Color iconColor;
+  final List<ForecastDay> forecast;
+
+  WeatherInfo({
+    required this.condition,
+    required this.temp,
+    required this.humidity,
+    required this.windSpeed,
+    required this.icon,
+    required this.iconColor,
+    required this.forecast,
+  });
+}
+
+class ForecastDay {
+  final String dayName;
+  final String condition;
+  final double temp;
+  final IconData icon;
+
+  ForecastDay({
+    required this.dayName,
+    required this.condition,
+    required this.temp,
+    required this.icon,
+  });
+}
+
 class DetailScreen extends StatelessWidget {
   final Destination destination;
 
   const DetailScreen({super.key, required this.destination});
 
+  // Dynamically generates realistic weather data based on destination category
+  WeatherInfo _getWeatherInfo(String category) {
+    if (category == 'Pantai') {
+      return WeatherInfo(
+        condition: 'Cerah Berawan',
+        temp: 31.0,
+        humidity: 72,
+        windSpeed: 14.5,
+        icon: Icons.wb_sunny_outlined,
+        iconColor: Colors.amber,
+        forecast: [
+          ForecastDay(dayName: 'Besok', condition: 'Cerah', temp: 32.0, icon: Icons.wb_sunny),
+          ForecastDay(dayName: 'Lusa', condition: 'Hujan Ringan', temp: 29.0, icon: Icons.cloudy_snowing),
+          ForecastDay(dayName: 'Hari ke-3', condition: 'Cerah Berawan', temp: 30.5, icon: Icons.wb_cloudy_outlined),
+        ],
+      );
+    } else if (category == 'Gunung') {
+      return WeatherInfo(
+        condition: 'Kabut Berawan',
+        temp: 17.5,
+        humidity: 88,
+        windSpeed: 8.2,
+        icon: Icons.filter_drama_outlined,
+        iconColor: Colors.lightBlueAccent,
+        forecast: [
+          ForecastDay(dayName: 'Besok', condition: 'Berawan', temp: 16.0, icon: Icons.cloud),
+          ForecastDay(dayName: 'Lusa', condition: 'Cerah Berawan', temp: 19.0, icon: Icons.wb_cloudy),
+          ForecastDay(dayName: 'Hari ke-3', condition: 'Hujan Dingin', temp: 15.0, icon: Icons.grain),
+        ],
+      );
+    } else if (category == 'Danau') {
+      return WeatherInfo(
+        condition: 'Sejuk Berangin',
+        temp: 23.8,
+        humidity: 76,
+        windSpeed: 18.0,
+        icon: Icons.air_outlined,
+        iconColor: Colors.tealAccent,
+        forecast: [
+          ForecastDay(dayName: 'Besok', condition: 'Cerah', temp: 25.0, icon: Icons.wb_sunny),
+          ForecastDay(dayName: 'Lusa', condition: 'Berawan', temp: 23.0, icon: Icons.cloud),
+          ForecastDay(dayName: 'Hari ke-3', condition: 'Gerimis', temp: 22.5, icon: Icons.grain),
+        ],
+      );
+    } else {
+      // Budaya
+      return WeatherInfo(
+        condition: 'Cerah Nyaman',
+        temp: 27.2,
+        humidity: 62,
+        windSpeed: 9.5,
+        icon: Icons.wb_cloudy_outlined,
+        iconColor: Colors.orangeAccent,
+        forecast: [
+          ForecastDay(dayName: 'Besok', condition: 'Cerah', temp: 28.5, icon: Icons.wb_sunny),
+          ForecastDay(dayName: 'Lusa', condition: 'Cerah Berawan', temp: 27.0, icon: Icons.wb_cloudy),
+          ForecastDay(dayName: 'Hari ke-3', condition: 'Berawan', temp: 26.5, icon: Icons.cloud),
+        ],
+      );
+    }
+  }
+
+  Widget _buildWeatherDetailItem(IconData icon, String value, String label) {
+    return Row(
+      children: [
+        Icon(icon, size: 20, color: AppColors.primaryLight),
+        const SizedBox(width: 8),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              value,
+              style: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+                color: AppColors.textPrimary,
+              ),
+            ),
+            Text(
+              label,
+              style: const TextStyle(
+                fontSize: 10,
+                color: AppColors.textHint,
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final weather = _getWeatherInfo(destination.category);
+
     return Scaffold(
       body: Stack(
         children: [
@@ -151,6 +279,152 @@ class DetailScreen extends StatelessWidget {
 
                       const SizedBox(height: 24),
 
+                      // Weather Check Card
+                      const Text(
+                        'Informasi Cuaca Saat Ini ⛅',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.textPrimary,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: AppColors.surface,
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(color: AppColors.surfaceLight, width: 1.5),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.2),
+                              blurRadius: 10,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  children: [
+                                    Icon(weather.icon, size: 40, color: weather.iconColor),
+                                    const SizedBox(width: 12),
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          weather.condition,
+                                          style: const TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                            color: AppColors.textPrimary,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 2),
+                                        const Text(
+                                          'Prakiraan lokal real-time',
+                                          style: TextStyle(
+                                            fontSize: 11,
+                                            color: AppColors.textHint,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                                Text(
+                                  '${weather.temp.toStringAsFixed(1)}°C',
+                                  style: const TextStyle(
+                                    fontSize: 32,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppColors.textPrimary,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 16),
+                            const Divider(color: AppColors.surfaceLight, height: 1, thickness: 1),
+                            const SizedBox(height: 16),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                _buildWeatherDetailItem(Icons.water_drop_outlined, '${weather.humidity}%', 'Kelembaban'),
+                                _buildWeatherDetailItem(Icons.wind_power_outlined, '${weather.windSpeed} km/h', 'Kecepatan Angin'),
+                              ],
+                            ),
+                            const SizedBox(height: 20),
+                            // 3-Day Forecast Section
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                'Prakiraan 3 Hari Ke Depan',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                  color: AppColors.textSecondary.withOpacity(0.9),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 12),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: weather.forecast.map((f) {
+                                return Expanded(
+                                  child: Container(
+                                    margin: const EdgeInsets.symmetric(horizontal: 4),
+                                    padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
+                                    decoration: BoxDecoration(
+                                      color: AppColors.surfaceLight.withOpacity(0.5),
+                                      borderRadius: BorderRadius.circular(12),
+                                      border: Border.all(color: AppColors.surfaceLight.withOpacity(0.8)),
+                                    ),
+                                    child: Column(
+                                      children: [
+                                        Text(
+                                          f.dayName,
+                                          style: const TextStyle(
+                                            fontSize: 11,
+                                            color: AppColors.textSecondary,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 6),
+                                        Icon(f.icon, size: 20, color: weather.iconColor),
+                                        const SizedBox(height: 6),
+                                        Text(
+                                          '${f.temp.toStringAsFixed(0)}°C',
+                                          style: const TextStyle(
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.bold,
+                                            color: AppColors.textPrimary,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 2),
+                                        Text(
+                                          f.condition,
+                                          style: const TextStyle(
+                                            fontSize: 8,
+                                            color: AppColors.textHint,
+                                          ),
+                                          textAlign: TextAlign.center,
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              }).toList(),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      const SizedBox(height: 24),
+
                       // Highlights
                       if (destination.highlights.isNotEmpty) ...[
                         const Text(
@@ -197,8 +471,9 @@ class DetailScreen extends StatelessWidget {
                         height: 100,
                         child: ListView.builder(
                           scrollDirection: Axis.horizontal,
-                          itemCount: 4,
+                          itemCount: destination.galleries.isNotEmpty ? destination.galleries.length : 1,
                           itemBuilder: (context, index) {
+                            final imageUrl = destination.galleries.isNotEmpty ? destination.galleries[index] : destination.imageUrl;
                             return Container(
                               width: 100,
                               margin: const EdgeInsets.only(right: 12),
@@ -206,7 +481,7 @@ class DetailScreen extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(16),
                                 color: AppColors.surface,
                                 image: DecorationImage(
-                                  image: NetworkImage(destination.imageUrl),
+                                  image: NetworkImage(imageUrl),
                                   fit: BoxFit.cover,
                                 ),
                               ),

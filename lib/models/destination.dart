@@ -9,6 +9,10 @@ class Destination {
   final String category;
   final List<String> galleries;
   final List<String> highlights;
+  final List<String> moods;
+  final bool isHiddenGem;
+  final double latitude;
+  final double longitude;
 
   const Destination({
     required this.id,
@@ -21,5 +25,10 @@ class Destination {
     required this.category,
     this.galleries = const [],
     this.highlights = const [],
+    this.moods = const [],
+    this.isHiddenGem = false,
+    required this.latitude,
+    required this.longitude,
   });
 }
+

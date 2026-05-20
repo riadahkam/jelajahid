@@ -9,11 +9,13 @@ import 'price_tag.dart';
 class DestinationCard extends StatelessWidget {
   final Destination destination;
   final VoidCallback? onTap;
+  final double? displayDistance;
 
   const DestinationCard({
     super.key,
     required this.destination,
     this.onTap,
+    this.displayDistance,
   });
 
   @override
@@ -46,6 +48,46 @@ class DestinationCard extends StatelessWidget {
                     fit: BoxFit.cover,
                   ),
                 ),
+                // Hidden Gem Badge
+                if (destination.isHiddenGem)
+                  Positioned(
+                    top: 12,
+                    left: 12,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: [Color(0xFFE5A93C), Color(0xFFC5871B)],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.amber.withOpacity(0.3),
+                            blurRadius: 8,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      child: const Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.auto_awesome, color: Colors.white, size: 12),
+                          SizedBox(width: 4),
+                          Text(
+                            'Hidden Gem ✨',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 0.5,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 Positioned(
                   top: 12,
                   right: 12,
@@ -127,6 +169,28 @@ class DestinationCard extends StatelessWidget {
                       ),
                     ],
                   ),
+                  // Display Distance
+                  if (displayDistance != null) ...[
+                    const SizedBox(height: 6),
+                    Row(
+                      children: [
+                        const Icon(
+                          Icons.navigation,
+                          size: 14,
+                          color: AppColors.accent,
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          '${displayDistance!.toStringAsFixed(1)} km dari lokasi Anda',
+                          style: const TextStyle(
+                            fontSize: 12,
+                            color: AppColors.accent,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                   const SizedBox(height: 12),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
